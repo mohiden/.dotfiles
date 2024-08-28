@@ -7,7 +7,7 @@ function W.config()
     compile = false, -- enable compiling the colorscheme
     undercurl = false, -- enable undercurls
     commentStyle = { italic = true },
-    functionStyle = {},
+    functionStyle = { italic = true, bold = true },
     keywordStyle = { italic = true },
     statementStyle = { bold = true },
     typeStyle = { bold = true },
@@ -431,12 +431,12 @@ local G = {
       terminal_colors = true, -- add neovim terminal colors
       undercurl = true,
       underline = true,
-      bold = false,
+      bold = true,
       italic = {
         strings = true,
         emphasis = true,
         comments = true,
-        operators = false,
+        operators = true,
         folds = true,
       },
       strikethrough = true,
@@ -473,7 +473,7 @@ function M.config()
     dark_variant = "moon", -- main, moon, or dawn
     styles = {
       bold = true,
-      italic = true,
+      -- italic = false,
       transparency = true,
     },
     --   before_highlight = function(group, highlight, palette)
@@ -485,7 +485,7 @@ function M.config()
     --     end
     --   end,
   }
-  ColorMyPencils()
+  -- ColorMyPencils()
 end
 
 local X = {
@@ -545,4 +545,56 @@ local Z = {
   config = function() end,
 }
 
-return { C, G, M, X, Z, W }
+local H = {
+  "neanias/everforest-nvim",
+  config = function()
+    require("everforest").setup {
+      -- Your config here
+    }
+  end,
+}
+local U = {
+  "Mofiqul/vscode.nvim",
+  config = function()
+    require("vscode").setup {
+      -- Enable transparent background
+      transparent = true,
+
+      -- Enable italic comment
+      italic_comments = true,
+
+      -- Disable nvim-tree background color
+      disable_nvimtree_bg = true,
+    }
+  end,
+}
+
+local V = {
+  "Yazeed1s/oh-lucy.nvim",
+}
+
+local L = {
+  "wincent/base16-nvim",
+  config = function()
+    vim.o.background = "dark"
+    -- XXX: hi Normal ctermbg=NONE
+    -- Make comments more prominent -- they are important.
+    local bools = vim.api.nvim_get_hl(0, { name = "Boolean" })
+    vim.api.nvim_set_hl(0, "Comment", bools)
+    -- Make it clearly visible which argument we're at.
+    local marked = vim.api.nvim_get_hl(0, { name = "PMenu" })
+    vim.api.nvim_set_hl(
+      0,
+      "LspSignatureActiveParameter",
+      { fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg, ctermbg = marked.ctermbg, bold = true }
+    )
+    vim.cmd [[colorscheme base16-gruvbox-dark-hard]]
+    -- XXX
+    -- Would be nice to customize the highlighting of warnings and the like to make
+    -- them less glaring. But alas
+    -- https://github.com/nvim-lua/lsp_extensions.nvim/issues/21
+    -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
+  end,
+}
+
+return { C, G, M, X, Z, W, H, U, V, L, T }

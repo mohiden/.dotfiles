@@ -48,3 +48,7 @@ vim.g.netrw_bufsettings = 'noma nomod nu rnu nobl nowrap ro' -- show numbers in 
 
 -- vim.g.netrw_banner = 0 -- hide banner netrw
 vim.opt.guicursor = "" -- make cursor block i mode
+
+-- fold
+opt.foldmethod = "indent" -- fold based on indent levels
+opt.foldlevel = 99 -- open all folds by default

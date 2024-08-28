@@ -64,6 +64,9 @@ return {
 
         opts.desc = "Restart LSP"
         keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+
+        opts.desc = "toggle inlay hint"
+        keymap.set("n", "<leader>;", ":lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>", opts) -- mapping to restart lsp if necessary
       end,
     })
 
@@ -83,7 +86,25 @@ return {
       function(server_name)
         lspconfig[server_name].setup {
           capabilities = capabilities,
-          inlay_hints = { enabled = true },
+          hint = { enable = true },
+        }
+      end,
+      ["tsserver"] = function()
+        -- configure graphql language server
+        lspconfig["tsserver"].setup {
+          capabilities = capabilities,
+          init_options = {
+            preferences = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+              importModuleSpecifierPreference = "non-relative",
+            },
+          },
         }
       end,
       ["graphql"] = function()
@@ -97,15 +118,31 @@ return {
         lspconfig["omnisharp"].setup {
           capabilities = capabilities,
           init_options = { omnisharp_server_stdio = true },
-          inlay_hints = { enabled = true },
           cmd = { "dotnet", "/Users/mohiden/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll" },
         }
       end,
       ["clangd"] = function()
         lspconfig["clangd"].setup {
           capabilities = capabilities,
-          inlay_hints = { enabled = true },
           cmd = { "clangd", "--offset-encoding=utf-16" },
+        }
+      end,
+      ["gopls"] = function()
+        lspconfig["gopls"].setup {
+          capabilities = capabilities,
+          settings = {
+            gopls = {
+              hints = {
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                constantValues = true,
+                functionTypeParameters = true,
+                parameterNames = true,
+                rangeVariableTypes = true,
+              },
+            },
+          },
         }
       end,
       ["lua_ls"] = function()
